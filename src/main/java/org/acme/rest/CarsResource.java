@@ -36,6 +36,12 @@ public class CarsResource {
         return Response.ok(carService.find(id)).build();
     }
 
+    @GET
+    @Path("make/{make}/model/{model}")
+    public Response getByMakeAndModel(@PathParam("make") String make, @PathParam("model") String model) {
+        return Response.ok(carService.findByMakeAndModel(make,model)).build();
+    }
+
     @DELETE
     @Path("{id}")
     public Response delete(@PathParam("id") Long id) {

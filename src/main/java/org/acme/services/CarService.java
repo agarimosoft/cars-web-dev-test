@@ -43,6 +43,12 @@ public class CarService {
         return carRepository.findById(id);
     }
 
+    public Car findByMakeAndModel(String make, String model) {
+        log.info("Entity requested: make=" + make + " model="+ model);
+
+        return carRepository.findbyMakeAndModel(make, model);
+    }
+
     @Transactional
     public void remove(Long id) {
         log.info("Entity removed: id=" + id);

@@ -12,7 +12,6 @@ import javax.ws.rs.core.MediaType;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
@@ -124,5 +123,21 @@ public class CarsResourceTest {
                 .put("/cars/" + id)
                 .then()
                 .statusCode(422);
+    }
+
+    @Test
+    public void testRetrieveCarByMakeAndModel() {
+        Long id = carService.create(new Car(null, "Honda", "Civic", "Blue", 2005));
+
+        given()
+                .when().get("/cars/make/Honda/model/Civic")
+                .then()
+                .statusCode(200)
+                .body(
+                        "make", is("Honda"),
+                        "model", is("Civic"),
+                        "colour", is("Blue"),
+                        "year", is(2005)
+                );
     }
 }

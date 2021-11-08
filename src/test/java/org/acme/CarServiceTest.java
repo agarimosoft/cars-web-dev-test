@@ -4,7 +4,6 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.acme.model.Car;
 import org.acme.resources.WireMockWordsResource;
-import org.acme.services.CarRepository;
 import org.acme.services.CarService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @QuarkusTest
 @QuarkusTestResource(WireMockWordsResource.class)
@@ -67,5 +65,14 @@ public class CarServiceTest {
         String response = carService.getAdditionalText("test");
 
         Assertions.assertEquals("word1 word2 word3 word4 word5", response);
+    }
+
+    @Test
+    public void testRetrieveCarByMakeAndModel() {
+        car = new Car(null, "Renault", "Clio", "Blue", 1998);
+        car.setId(carService.create(car));
+
+        Assertions.assertEquals(car, carService.findByMakeAndModel(
+                car.getMake(),car.getModel()));
     }
 }
