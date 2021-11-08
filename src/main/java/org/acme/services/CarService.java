@@ -5,10 +5,8 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
+import javax.transaction.Transactional;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -16,18 +14,19 @@ import java.util.stream.Collectors;
 public class CarService {
     private static final Logger log = Logger.getLogger(CarService.class.getName());
 
-    private AtomicInteger sequence = new AtomicInteger();
-    private List<Car> cars = Collections.synchronizedList(new ArrayList<>());
-
     @Inject
     @RestClient
     WordsService wordsService;
 
-    public Integer create(Car car) {
-        car.setId(sequence.incrementAndGet());
+    @Inject
+    CarRepository carRepository;
+
+    @Transactional
+    public Long create(Car car) {
         car.setAdditionalText(getAdditionalText(car.getModel()));
-        cars.add(car);
-        log.info("Entity saved: id=" + sequence.get());
+        carRepository.persist(car);
+
+        log.info("Entity saved: id=" + car.getId());
 
         return car.getId();
     }
@@ -35,28 +34,25 @@ public class CarService {
     public List<Car> list() {
         log.info("List requested");
 
-        return cars;
+        return carRepository.listAll();
     }
 
-    public Car find(Integer id) {
+    public Car find(Long id) {
         log.info("Entity requested: id=" + id);
 
-        return cars.stream()
-                .filter(car -> car.getId().equals(id))
-                .findFirst().get();
+        return carRepository.findById(id);
     }
 
-    public void remove(Integer id) {
+    @Transactional
+    public void remove(Long id) {
         log.info("Entity removed: id=" + id);
 
-        cars.remove(cars.stream()
-                .filter(c -> c.getId().equals(id))
-                .findFirst().get());
+        carRepository.deleteById(id);
     }
 
     public String getAdditionalText(String keyWord) {
         try {
-            return wordsService.getWords(keyWord, 10)
+            return wordsService.getWords(keyWord, 5)
                     .stream().map(c -> c.word)
                     .collect(Collectors.joining(" "));
         } catch (Exception e) {
@@ -64,12 +60,15 @@ public class CarService {
         }
     }
 
-    public void update(Integer id, Car car) {
+    @Transactional
+    public void update(Long id, Car car) {
         log.info("Entity updated: id=" + id);
 
-        remove(id);
-        car.setId(id);
-        car.setAdditionalText(getAdditionalText(car.getModel()));
-        cars.add(car);
+        Car entity = find(id);
+        entity.setMake(car.getMake());
+        entity.setModel(car.getModel());
+        entity.setAdditionalText(getAdditionalText(car.getModel()));
+        entity.setColour(car.getColour());
+        entity.setYear(car.getYear());
     }
 }

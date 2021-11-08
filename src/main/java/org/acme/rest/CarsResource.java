@@ -32,20 +32,20 @@ public class CarsResource {
 
     @GET
     @Path("{id}")
-    public Response get(@PathParam("id") Integer id) {
+    public Response get(@PathParam("id") Long id) {
         return Response.ok(carService.find(id)).build();
     }
 
     @DELETE
     @Path("{id}")
-    public Response delete(@PathParam("id") Integer id) {
+    public Response delete(@PathParam("id") Long id) {
         carService.remove(id);
         return Response.ok().build();
     }
 
     @PUT
     @Path("{id}")
-    public Response update(@PathParam("id") Integer id, Car car) {
+    public Response update(@PathParam("id") Long id, Car car) {
         if (car.getId() != null) {
             throw new WebApplicationException("Id was invalidly set on request.", 422);
         }

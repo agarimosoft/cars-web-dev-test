@@ -1,17 +1,36 @@
 package org.acme.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class Car {
-    private Integer id;
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(length = 40)
     private String make;
+
+    @Column(length = 40)
     private String model;
+
+    @Column(length = 40)
     private String additionalText;
+
+    @Column(length = 40)
     private String colour;
+
+    @Column(length = 40)
     private Integer year;
 
     public Car() {
     }
 
-    public Car(Integer id, String make, String model, String colour, Integer year) {
+    public Car(Long id, String make, String model, String colour, Integer year) {
         this.id = id;
         this.make = make;
         this.model = model;
@@ -19,11 +38,11 @@ public class Car {
         this.year = year;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -65,5 +84,13 @@ public class Car {
 
     public void setYear(Integer year) {
         this.year = year;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Car car = (Car) o;
+        return id.equals(car.id);
     }
 }

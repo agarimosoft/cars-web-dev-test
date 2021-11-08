@@ -47,7 +47,7 @@ public class CarsResourceTest {
 
     @Test
     public void testRetrieveCar() {
-        Integer id = carService.create(new Car(null, "Honda", "Civic", "Blue", 2005));
+        Long id = carService.create(new Car(null, "Honda", "Civic", "Blue", 2005));
 
         given()
                 .when().get("/cars/" + id)
@@ -79,19 +79,19 @@ public class CarsResourceTest {
 
     @Test
     public void testDeleteCar() {
-        Integer id = carService.create(new Car(null, "Opel", "Vectra", "Green", 2007));
+        Long id = carService.create(new Car(null, "Opel", "Vectra", "Green", 2007));
 
         given()
                 .when().delete("/cars/" + id)
                 .then()
                 .statusCode(200);
 
-        Assertions.assertThrows(NoSuchElementException.class, () -> carService.find(id));
+        Assertions.assertNull(carService.find(id));
     }
 
     @Test
     public void testUpdateCar() {
-        Integer id = carService.create(new Car(null, "Renault", "Clio","Blue", 1998));
+        Long id = carService.create(new Car(null, "Renault", "Clio", "Blue", 1998));
 
         given()
                 .body("{\"make\": \"Renault\", \"model\": \"Polo\", \"colour\": \"Blue\", \"year\": 1994}")
@@ -108,14 +108,14 @@ public class CarsResourceTest {
                 .body(
                         "make", is("Renault"),
                         "model", is("Polo"),
-                        "colour",is("Blue"),
+                        "colour", is("Blue"),
                         "year", is(1994)
                 );
     }
 
     @Test
     public void testUpdateInvalidCar() {
-        Integer id = carService.create(new Car(null, "Renault", "Clio","Blue", 1998));
+        Long id = carService.create(new Car(null, "Renault", "Clio", "Blue", 1998));
 
         given()
                 .body("{\"id\": 1,\"make\": \"Renault\", \"model\": \"Clio\", \"colour\": \"Blue\", \"year\": 1998}")
