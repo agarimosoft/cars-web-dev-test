@@ -88,4 +88,41 @@ public class CarsResourceTest {
 
         Assertions.assertThrows(NoSuchElementException.class, () -> carService.find(id));
     }
+
+    @Test
+    public void testUpdateCar() {
+        Integer id = carService.create(new Car(null, "Renault", "Clio","Blue", 1998));
+
+        given()
+                .body("{\"make\": \"Renault\", \"model\": \"Polo\", \"colour\": \"Blue\", \"year\": 1994}")
+                .header("Content-Type", MediaType.APPLICATION_JSON)
+                .when()
+                .put("/cars/" + id)
+                .then()
+                .statusCode(200);
+
+        given()
+                .when().get("/cars/" + id)
+                .then()
+                .statusCode(200)
+                .body(
+                        "make", is("Renault"),
+                        "model", is("Polo"),
+                        "colour",is("Blue"),
+                        "year", is(1994)
+                );
+    }
+
+    @Test
+    public void testUpdateInvalidCar() {
+        Integer id = carService.create(new Car(null, "Renault", "Clio","Blue", 1998));
+
+        given()
+                .body("{\"id\": 1,\"make\": \"Renault\", \"model\": \"Clio\", \"colour\": \"Blue\", \"year\": 1998}")
+                .header("Content-Type", MediaType.APPLICATION_JSON)
+                .when()
+                .put("/cars/" + id)
+                .then()
+                .statusCode(422);
+    }
 }

@@ -42,4 +42,15 @@ public class CarsResource {
         carService.remove(id);
         return Response.ok().build();
     }
+
+    @PUT
+    @Path("{id}")
+    public Response update(@PathParam("id") Integer id, Car car) {
+        if (car.getId() != null) {
+            throw new WebApplicationException("Id was invalidly set on request.", 422);
+        }
+
+        carService.update(id, car);
+        return Response.ok().build();
+    }
 }

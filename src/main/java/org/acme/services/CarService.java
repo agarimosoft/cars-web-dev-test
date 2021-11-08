@@ -55,8 +55,20 @@ public class CarService {
     }
 
     public String getAdditionalText(String keyWord) {
-        return wordsService.getWords(keyWord, 10)
-                .stream().map(c -> c.word)
-                .collect(Collectors.joining(" "));
+        try {
+            return wordsService.getWords(keyWord, 10)
+                    .stream().map(c -> c.word)
+                    .collect(Collectors.joining(" "));
+        } catch (Exception e) {
+            return "WordsService unavailable";
+        }
+    }
+
+    public void update(Integer id, Car car) {
+        log.info("Entity updated" + id);
+        remove(id);
+        car.setId(id);
+        car.setAdditionalText(getAdditionalText(car.getModel()));
+        cars.add(car);
     }
 }
