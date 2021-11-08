@@ -1,7 +1,9 @@
 package org.acme;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.acme.model.Car;
+import org.acme.resources.WireMockWordsResource;
 import org.acme.services.CarService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @QuarkusTest
+@QuarkusTestResource(WireMockWordsResource.class)
 public class CarServiceTest {
 
     @Inject
@@ -56,5 +59,12 @@ public class CarServiceTest {
         carService.remove(car.getId());
 
         Assertions.assertThrows(NoSuchElementException.class, () -> carService.find(car.getId()));
+    }
+
+    @Test
+    public void testAdditionalTextGenerator() {
+        String response = carService.getAdditionalText("test");
+
+        Assertions.assertEquals("word1 word2 word3 word4 word5",response);
     }
 }

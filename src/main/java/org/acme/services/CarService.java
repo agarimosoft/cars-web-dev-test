@@ -1,13 +1,16 @@
 package org.acme.services;
 
 import org.acme.model.Car;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class CarService {
@@ -16,8 +19,13 @@ public class CarService {
     private AtomicInteger sequence = new AtomicInteger();
     private List<Car> cars = Collections.synchronizedList(new ArrayList<>());
 
+    @Inject
+    @RestClient
+    WordsService wordsService;
+
     public Integer create(Car car) {
         car.setId(sequence.incrementAndGet());
+        car.setAdditionalText(getAdditionalText(car.getModel()));
         cars.add(car);
         log.info("Entity saved: id=" + sequence.get());
 
@@ -44,5 +52,11 @@ public class CarService {
         cars.remove(cars.stream()
                 .filter(c -> c.getId().equals(id))
                 .findFirst().get());
+    }
+
+    public String getAdditionalText(String keyWord) {
+        return wordsService.getWords(keyWord, 10)
+                .stream().map(c -> c.word)
+                .collect(Collectors.joining(" "));
     }
 }

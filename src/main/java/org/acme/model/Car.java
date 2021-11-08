@@ -4,6 +4,7 @@ public class Car {
     private Integer id;
     private String make;
     private String model;
+    private String additionalText;
     private String colour;
     private Integer year;
 
@@ -48,6 +49,14 @@ public class Car {
 
     public void setColour(String colour) {
         this.colour = colour;
+    }
+
+    public String getAdditionalText() {
+        return additionalText;
+    }
+
+    public void setAdditionalText(String additionalText) {
+        this.additionalText = additionalText;
     }
 
     public Integer getYear() {
