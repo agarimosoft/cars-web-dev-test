@@ -65,7 +65,8 @@ public class CarService {
     }
 
     public void update(Integer id, Car car) {
-        log.info("Entity updated" + id);
+        log.info("Entity updated: id=" + id);
+
         remove(id);
         car.setId(id);
         car.setAdditionalText(getAdditionalText(car.getModel()));
